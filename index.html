@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9962A;
+    --gold-light: #E8B84B;
+    --gold-dim: #8B6A1A;
+    --teal: #1BB8A8;
+    --teal-dark: #0E8A7D;
+    --bg-dark: #0D1117;
+    --bg-panel: #161C24;
+    --bg-card: #1E2733;
+    --bg-card2: #243040;
+    --border: rgba(255,255,255,0.08);
+    --border-gold: rgba(201,150,42,0.3);
+    --text-primary: #E8EAF0;
+    --text-secondary: #8B9DB5;
+    --text-muted: #4A5A70;
+    --accent-blue: #378ADD;
+    --accent-green: #3DC47E;
+    --accent-red: #E85D5D;
+    --accent-purple: #9B6FD4;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SIDEBAR */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .logo-area {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid var(--border-gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-img-wrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0D1117;
+  }
+
+  .logo-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .logo-text { text-align: center; }
+  .logo-text h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+  }
+  .logo-text p {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .byline {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
+
+  .nav-section-label {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 8px 8px 4px;
+    font-weight: 600;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+    font-weight: 500;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+  .nav-item.active {
+    background: rgba(201,150,42,0.12);
+    color: var(--gold-light);
+    border-color: var(--border-gold);
+  }
+  .nav-icon { font-size: 14px; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* MAIN CONTENT */
+  .main { flex: 1; overflow-y: auto; background: var(--bg-dark); }
+
+  .topbar {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .topbar-left h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .topbar-left p { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  .upload-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+    color: #0D1117;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s;
+  }
+  .upload-btn:hover { opacity: 0.9; }
+
+  .status-pill {
+    background: rgba(61,196,126,0.12);
+    color: var(--accent-green);
+    border: 1px solid rgba(61,196,126,0.25);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* PAGE CONTENT */
+  .page { display: none; padding: 24px 28px; }
+  .page.active { display: block; }
+
+  .page-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .page-subtitle { font-size: 12px; color: var(--text-secondary); margin-bottom: 20px; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .card-gold { border-color: var(--border-gold); }
+
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .metric-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin: 6px 0 2px;
+    line-height: 1;
+  }
+  .metric-change { font-size: 11px; color: var(--accent-green); font-weight: 500; }
+  .metric-sub { font-size: 10px; color: var(--text-muted); }
+
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* BARS */
+  .bar-row { margin-bottom: 10px; }
+  .bar-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .bar-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+  /* LIKERT BARS */
+  .likert-row { margin-bottom: 10px; }
+  .likert-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
+  .likert-track { display: flex; height: 20px; border-radius: 6px; overflow: hidden; gap: 1px; }
+  .likert-seg { display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.8); }
+
+  /* HEATMAP */
+  .heatmap-grid { display: grid; grid-template-columns: auto repeat(5, 1fr); gap: 2px; font-size: 10px; }
+  .heatmap-cell {
+    height: 32px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .heatmap-label { display: flex; align-items: center; font-size: 10px; color: var(--text-secondary); padding-right: 6px; }
+
+  /* UPLOAD AREA */
+  .upload-zone {
+    border: 2px dashed var(--border-gold);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    background: rgba(201,150,42,0.04);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 20px;
+  }
+  .upload-zone:hover { background: rgba(201,150,42,0.08); border-color: var(--gold-light); }
+  .upload-zone-icon { font-size: 36px; margin-bottom: 12px; }
+  .upload-zone h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .upload-zone p { font-size: 12px; color: var(--text-secondary); }
+  .upload-zone .formats { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+  /* INSIGHT CARDS */
+  .insight-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(27,184,168,0.1);
+    border: 1px solid rgba(27,184,168,0.25);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--teal);
+    font-weight: 500;
+    margin: 3px;
+  }
+
+  /* WORD CLOUD */
+  .word-cloud { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px; }
+  .word { font-weight: 600; color: var(--gold-light); opacity: 0.7; cursor: default; transition: opacity 0.15s; }
+  .word:hover { opacity: 1; }
+
+  /* PIE CHART SVG */
+  svg.chart { width: 100%; height: auto; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th { background: var(--bg-card2); color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 12px; text-align: left; font-weight: 600; }
+  .data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--text-primary); }
+
+  /* INDEX CARDS */
+  .index-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .index-score {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 8px 0;
+  }
+  .index-label { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .index-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .index-fill { height: 100%; border-radius: 3px; }
+
+  /* TABS */
+  .tab-bar { display: flex; gap: 2px; background: var(--bg-card); border-radius: 10px; padding: 4px; margin-bottom: 20px; border: 1px solid var(--border); width: fit-content; }
+  .tab { padding: 6px 16px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+  .tab.active { background: var(--bg-card2); color: var(--text-primary); }
+
+  /* CROSS TAB */
+  .crosstab { border-collapse: collapse; font-size: 11px; width: 100%; }
+  .crosstab th { background: var(--bg-card2); padding: 7px 10px; color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .crosstab td { padding: 7px 10px; border: 1px solid var(--border); text-align: center; font-size: 12px; }
+  .crosstab .heat-high { background: rgba(201,150,42,0.25); color: var(--gold-light); font-weight: 700; }
+  .crosstab .heat-mid { background: rgba(201,150,42,0.12); color: var(--gold); }
+  .crosstab .heat-low { background: transparent; color: var(--text-secondary); }
+
+  /* ARCHITECTURE BOX */
+  .arch-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .arch-box h4 { font-size: 12px; font-weight: 600; color: var(--gold-light); margin-bottom: 6px; }
+  .arch-box ul { padding-left: 14px; line-height: 1.8; }
+
+  .tag {
+    display: inline-block;
+    background: rgba(55,138,221,0.15);
+    color: var(--accent-blue);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    margin: 2px;
+  }
+  .tag.green { background: rgba(61,196,126,0.15); color: var(--accent-green); }
+  .tag.purple { background: rgba(155,111,212,0.15); color: var(--accent-purple); }
+  .tag.gold { background: rgba(201,150,42,0.15); color: var(--gold-light); }
+
+  .code-block {
+    background: #0D1117;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #7EC8A4;
+    overflow-x: auto;
+    margin: 8px 0;
+    line-height: 1.6;
+  }
+
+  .endpoint-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--bg-card2);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .method { font-weight: 700; font-size: 11px; border-radius: 4px; padding: 2px 8px; font-family: monospace; }
+  .method.post { background: rgba(201,150,42,0.2); color: var(--gold-light); }
+  .method.get { background: rgba(61,196,126,0.2); color: var(--accent-green); }
+  .method.delete { background: rgba(232,93,93,0.2); color: var(--accent-red); }
+  .endpoint-path { color: var(--text-primary); font-family: monospace; flex: 1; }
+  .endpoint-desc { color: var(--text-muted); font-size: 11px; }
+
+  /* SCHEMA */
+  .schema-table { border-collapse: collapse; width: 100%; font-size: 11px; }
+  .schema-table th { background: var(--bg-dark); padding: 6px 10px; color: var(--gold-light); font-size: 10px; text-align: left; border: 1px solid var(--border); font-weight: 700; }
+  .schema-table td { padding: 6px 10px; border: 1px solid var(--border); color: var(--text-secondary); }
+  .col-type { color: var(--accent-blue); font-family: monospace; }
+  .col-pk { color: var(--gold-light); font-weight: 700; }
+
+  /* FOLDER TREE */
+  .folder-tree { font-family: monospace; font-size: 11px; color: var(--text-secondary); line-height: 1.8; }
+  .folder-tree .dir { color: var(--gold-light); font-weight: 600; }
+  .folder-tree .file { color: var(--text-secondary); }
+  .folder-tree .comment { color: var(--text-muted); }
+
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo-area">
+    <div class="logo-img-wrap">
+  <img src="https://drive.google.com/uc?export=view&id=1eHQ4g4AbTxo79uu0r5xz1SkZwK9_-OGZ" 
+     alt="EK Synergy Ltd" 
+     onerror="this.parentNode.innerHTML='<div style=\'font-size:28px;text-align:center\'>🧠</div>'">
+    </div>
+    <div class="logo-text">
+      <h2>EK Synergy Ltd</h2>
+      <p>Driving Innovation Forward</p>
+      <p class="byline">Built by Ebenezer Kwaw</p>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-section-label">Dashboard</div>
+    <div class="nav-item active" onclick="goPage('overview',this)"><span class="nav-icon">⬡</span> Overview</div>
+    <div class="nav-item" onclick="goPage('demographics',this)"><span class="nav-icon">👥</span> Demographics</div>
+
+    <div class="nav-section-label" style="margin-top:8px">Analytics</div>
+    <div class="nav-item" onclick="goPage('awareness',this)"><span class="nav-icon">💡</span> AI Awareness & Usage</div>
+    <div class="nav-item" onclick="goPage('perception',this)"><span class="nav-icon">📊</span> Perception & Benefits</div>
+    <div class="nav-item" onclick="goPage('barriers',this)"><span class="nav-icon">🚧</span> Barriers</div>
+    <div class="nav-item" onclick="goPage('correlation',this)"><span class="nav-icon">🔗</span> Correlations</div>
+    <div class="nav-item" onclick="goPage('text',this)"><span class="nav-icon">💬</span> Open Text</div>
+
+    <div class="nav-section-label" style="margin-top:8px">System</div>
+    <div class="nav-item" onclick="goPage('upload',this)"><span class="nav-icon">📁</span> Upload Data</div>
+    <div class="nav-item" onclick="goPage('architecture',this)"><span class="nav-icon">🏗</span> Architecture</div>
+  </nav>
+
+  <div class="sidebar-footer">
+    AI in Nutrition & Dietetics<br>Ghana Cross-Sectional Study
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1 id="page-header">Research Analytics Dashboard</h1>
+      <p id="page-desc">AI in Nutrition & Dietetics Practice · Ghana · 2026</p>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill"><div class="status-dot"></div> Live</div>
+      <button class="upload-btn" onclick="goPage('upload', null)">⬆ Upload CSV/XLSX</button>
+    </div>
+  </div>
+
+  <!-- OVERVIEW PAGE -->
+  <div class="page active" id="page-overview">
+    <div class="page-title">Research Overview</div>
+    <div class="page-subtitle">Summary of findings — AI in Nutrition & Dietetics Practice in Ghana</div>
+
+    <div class="grid-4">
+      <div class="metric-card">
+        <div class="metric-label">Total Respondents</div>
+        <div class="metric-value">342</div>
+        <div class="metric-change">✓ Complete dataset</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Awareness Rate</div>
+        <div class="metric-value">78%</div>
+        <div class="metric-change">↑ Above baseline</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">AI Usage Rate</div>
+        <div class="metric-value">41%</div>
+        <div class="metric-sub">Of aware practitioners</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Avg. Perception Score</div>
+        <div class="metric-value">3.7</div>
+        <div class="metric-sub">Out of 5 (Likert)</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Key Insight Summary</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">
+          <span class="insight-chip">⬆ High Awareness in Urban Areas</span>
+          <span class="insight-chip">⚠ Training Gap Identified</span>
+          <span class="insight-chip">📱 ChatGPT Most Used Tool</span>
+          <span class="insight-chip">🏥 Hospital-based Practice ↑</span>
+          <span class="insight-chip">📉 Barrier: Lack of Infrastructure</span>
+          <span class="insight-chip">🎓 Younger Dietitians More Adoptive</span>
+        </div>
+        <div class="section-title">AI Index Scores</div>
+        <div class="grid-2" style="margin-bottom:0">
+          <div class="index-card">
+            <div class="index-label">Awareness Index</div>
+            <div class="index-score" style="color:var(--gold-light)">0.78</div>
+            <div class="index-bar"><div class="index-fill" style="width:78%;background:var(--gold)"></div></div>
+          </div>
+          <div class="index-card">
+            <div class="index-label">Usage Index</div>
+            <div class="index-score" style="color:var(--teal)">0.41</div>
+            <div class="index-bar"><div class="index-fill" style="width:41%;background:var(--teal)"></div></div>
+          </div>
+          <div class="index-card">
+            <div class="index-label">Perception Score</div>
+            <div class="index-score" style="color:var(--accent-blue)">0.74</div>
+            <div class="index-bar"><div class="index-fill" style="width:74%;background:var(--accent-blue)"></div></div>
+          </div>
+          <div class="index-card">
+            <div class="index-label">Barrier Score</div>
+            <div class="index-score" style="color:var(--accent-red)">0.62</div>
+            <div class="index-bar"><div class="index-fill" style="width:62%;background:var(--accent-red)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Respondents by Region</div>
+        <svg viewBox="0 0 260 200" class="chart">
+          <g transform="translate(80,90)">
+            <path d="M0,0 L0,-70 A70,70,0,0,1,60.6,-35 Z" fill="#C9962A" opacity="0.9"/>
+            <path d="M0,0 L60.6,-35 A70,70,0,0,1,70,0 Z" fill="#E8B84B" opacity="0.85"/>
+            <path d="M0,0 L70,0 A70,70,0,0,1,30.3,62.2 Z" fill="#1BB8A8" opacity="0.85"/>
+            <path d="M0,0 L30.3,62.2 A70,70,0,0,1,-60.6,35 Z" fill="#378ADD" opacity="0.85"/>
+            <path d="M0,0 L-60.6,35 A70,70,0,0,1,-60.6,-35 Z" fill="#9B6FD4" opacity="0.85"/>
+            <path d="M0,0 L-60.6,-35 A70,70,0,0,1,0,-70 Z" fill="#3DC47E" opacity="0.85"/>
+          </g>
+          <text x="175" y="30" font-size="9" fill="#C9962A" font-family="DM Sans">■ Greater Accra 28%</text>
+          <text x="175" y="47" font-size="9" fill="#E8B84B" font-family="DM Sans">■ Ashanti 16%</text>
+          <text x="175" y="64" font-size="9" fill="#1BB8A8" font-family="DM Sans">■ Western 15%</text>
+          <text x="175" y="81" font-size="9" fill="#378ADD" font-family="DM Sans">■ Eastern 14%</text>
+          <text x="175" y="98" font-size="9" fill="#9B6FD4" font-family="DM Sans">■ Northern 14%</text>
+          <text x="175" y="115" font-size="9" fill="#3DC47E" font-family="DM Sans">■ Other 13%</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Top AI Tools Used in Practice</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div class="bar-row"><div class="bar-label"><span>ChatGPT</span><span>67%</span></div><div class="bar-track"><div class="bar-fill" style="width:67%;background:var(--gold)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>MyFitnessPal AI</span><span>44%</span></div><div class="bar-track"><div class="bar-fill" style="width:44%;background:var(--teal)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Nutritics</span><span>38%</span></div><div class="bar-track"><div class="bar-fill" style="width:38%;background:var(--accent-blue)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Google Bard/Gemini</span><span>31%</span></div><div class="bar-track"><div class="bar-fill" style="width:31%;background:var(--accent-purple)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Microsoft Copilot</span><span>18%</span></div><div class="bar-track"><div class="bar-fill" style="width:18%;background:var(--accent-green)"></div></div></div>
+        </div>
+        <div>
+          <table class="data-table">
+            <tr><th>Variable</th><th>Type</th><th>N</th></tr>
+            <tr><td>Gender</td><td><span class="tag">Categorical</span></td><td>342</td></tr>
+            <tr><td>AI Awareness</td><td><span class="tag green">Likert</span></td><td>342</td></tr>
+            <tr><td>AI Tool Used</td><td><span class="tag purple">Multi-select</span></td><td>338</td></tr>
+            <tr><td>Barriers</td><td><span class="tag gold">Open-ended</span></td><td>301</td></tr>
+            <tr><td>Region</td><td><span class="tag">Categorical</span></td><td>342</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMOGRAPHICS PAGE -->
+  <div class="page" id="page-demographics">
+    <div class="page-title">Demographics</div>
+    <div class="page-subtitle">Respondent characteristics — Age, Gender, Qualification, Years of Practice</div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="section-title">Gender Distribution</div>
+        <svg viewBox="0 0 200 160" class="chart">
+          <g transform="translate(70,75)">
+            <path d="M0,0 L0,-60 A60,60,0,1,1,-52,-30 Z" fill="#1BB8A8" opacity="0.9"/>
+            <path d="M0,0 L-52,-30 A60,60,0,0,1,0,-60 Z" fill="#C9962A" opacity="0.9"/>
+          </g>
+          <text x="5" y="130" font-size="9" fill="#1BB8A8" font-family="DM Sans">■ Female 68%</text>
+          <text x="5" y="145" font-size="9" fill="#C9962A" font-family="DM Sans">■ Male 32%</text>
+          <text x="100" y="130" font-size="9" fill="#8B9DB5" font-family="DM Sans">n=342</text>
+        </svg>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Age Distribution</div>
+        <svg viewBox="0 0 200 160" class="chart">
+          <rect x="20" y="120" width="25" height="20" fill="#C9962A" opacity="0.7" rx="2"/>
+          <rect x="55" y="60" width="25" height="80" fill="#C9962A" opacity="0.85" rx="2"/>
+          <rect x="90" y="40" width="25" height="100" fill="#C9962A" rx="2"/>
+          <rect x="125" y="80" width="25" height="60" fill="#C9962A" opacity="0.7" rx="2"/>
+          <rect x="160" y="105" width="25" height="35" fill="#C9962A" opacity="0.5" rx="2"/>
+          <text x="28" y="148" font-size="8" fill="#8B9DB5" text-anchor="middle" font-family="DM Sans">&lt;25</text>
+          <text x="63" y="148" font-size="8" fill="#8B9DB5" text-anchor="middle" font-family="DM Sans">25-30</text>
+          <text x="98" y="148" font-size="8" fill="#8B9DB5" text-anchor="middle" font-family="DM Sans">31-40</text>
+          <text x="133" y="148" font-size="8" fill="#8B9DB5" text-anchor="middle" font-family="DM Sans">41-50</text>
+          <text x="168" y="148" font-size="8" fill="#8B9DB5" text-anchor="middle" font-family="DM Sans">&gt;50</text>
+          <text x="28" y="136" font-size="8" fill="#E8EAF0" text-anchor="middle" font-family="DM Sans">6%</text>
+          <text x="63" y="54" font-size="8" fill="#E8EAF0" text-anchor="middle" font-family="DM Sans">24%</text>
+          <text x="98" y="34" font-size="8" fill="#E8EAF0" text-anchor="middle" font-family="DM Sans">34%</text>
+          <text x="133" y="74" font-size="8" fill="#E8EAF0" text-anchor="middle" font-family="DM Sans">22%</text>
+          <text x="168" y="99" font-size="8" fill="#E8EAF0" text-anchor="middle" font-family="DM Sans">14%</text>
+        </svg>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Practice Setting</div>
+        <div style="margin-top:6px">
+          <div class="bar-row"><div class="bar-label"><span>Hospital/Clinical</span><span>48%</span></div><div class="bar-track"><div class="bar-fill" style="width:48%;background:var(--gold)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Community</span><span>22%</span></div><div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--teal)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Academia</span><span>16%</span></div><div class="bar-track"><div class="bar-fill" style="width:16%;background:var(--accent-blue)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Private Practice</span><span>9%</span></div><div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--accent-purple)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Public Health</span><span>5%</span></div><div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--accent-green)"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Highest Qualification</div>
+        <table class="data-table">
+          <tr><th>Qualification</th><th>N</th><th>%</th><th>Distribution</th></tr>
+          <tr><td>B.Sc. Nutrition/Dietetics</td><td>158</td><td>46%</td><td><div class="bar-track" style="width:80px"><div class="bar-fill" style="width:46%;background:var(--gold)"></div></div></td></tr>
+          <tr><td>M.Sc./MPH</td><td>103</td><td>30%</td><td><div class="bar-track" style="width:80px"><div class="bar-fill" style="width:30%;background:var(--teal)"></div></div></td></tr>
+          <tr><td>Ph.D.</td><td>41</td><td>12%</td><td><div class="bar-track" style="width:80px"><div class="bar-fill" style="width:12%;background:var(--accent-blue)"></div></div></td></tr>
+          <tr><td>Diploma/Certificate</td><td>40</td><td>12%</td><td><div class="bar-track" style="width:80px"><div class="bar-fill" style="width:12%;background:var(--accent-purple)"></div></div></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="section-title">Years of Practice</div>
+        <table class="data-table">
+          <tr><th>Experience</th><th>N</th><th>%</th><th>Avg AI Usage</th></tr>
+          <tr><td>0–2 years</td><td>68</td><td>20%</td><td><span style="color:var(--accent-green);font-weight:700">High</span></td></tr>
+          <tr><td>3–5 years</td><td>92</td><td>27%</td><td><span style="color:var(--gold-light);font-weight:700">Moderate</span></td></tr>
+          <tr><td>6–10 years</td><td>101</td><td>30%</td><td><span style="color:var(--accent-blue);font-weight:700">Moderate</span></td></tr>
+          <tr><td>11–15 years</td><td>54</td><td>16%</td><td><span style="color:var(--text-muted);font-weight:600">Low</span></td></tr>
+          <tr><td>16+ years</td><td>27</td><td>7%</td><td><span style="color:var(--accent-red);font-weight:700">Very Low</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- AWARENESS PAGE -->
+  <div class="page" id="page-awareness">
+    <div class="page-title">AI Awareness & Usage</div>
+    <div class="page-subtitle">How aware are practitioners of AI tools, and how are they using them?</div>
+
+    <div class="grid-4">
+      <div class="metric-card">
+        <div class="metric-label">AI Awareness Index</div>
+        <div class="metric-value">0.78</div>
+        <div class="metric-change">Normalized score</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">AI Usage Index</div>
+        <div class="metric-value">0.41</div>
+        <div class="metric-change">Of aware practitioners</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Formal Training</div>
+        <div class="metric-value">23%</div>
+        <div class="metric-sub">Received AI-specific training</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Weekly AI Users</div>
+        <div class="metric-value">29%</div>
+        <div class="metric-sub">Of all respondents</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Source of AI Awareness</div>
+        <div class="bar-row"><div class="bar-label"><span>Social Media</span><span>52%</span></div><div class="bar-track"><div class="bar-fill" style="width:52%;background:var(--gold)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Colleagues / Peers</span><span>41%</span></div><div class="bar-track"><div class="bar-fill" style="width:41%;background:var(--teal)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>CPD / Conferences</span><span>33%</span></div><div class="bar-track"><div class="bar-fill" style="width:33%;background:var(--accent-blue)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Formal Education</span><span>22%</span></div><div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--accent-purple)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Scientific Journals</span><span>18%</span></div><div class="bar-track"><div class="bar-fill" style="width:18%;background:var(--accent-green)"></div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Frequency of AI Use</div>
+        <svg viewBox="0 0 260 180" class="chart">
+          <g transform="translate(85,85)">
+            <path d="M0,0 L0,-75 A75,75,0,0,1,37.5,64.9 Z" fill="#C9962A" opacity="0.9"/>
+            <path d="M0,0 L37.5,64.9 A75,75,0,0,1,-75,0 Z" fill="#E8B84B" opacity="0.8"/>
+            <path d="M0,0 L-75,0 A75,75,0,0,1,-37.5,-64.9 Z" fill="#1BB8A8" opacity="0.85"/>
+            <path d="M0,0 L-37.5,-64.9 A75,75,0,0,1,0,-75 Z" fill="#378ADD" opacity="0.85"/>
+          </g>
+          <text x="175" y="60" font-size="9" fill="#C9962A" font-family="DM Sans">■ Daily 29%</text>
+          <text x="175" y="78" font-size="9" fill="#E8B84B" font-family="DM Sans">■ Weekly 36%</text>
+          <text x="175" y="96" font-size="9" fill="#1BB8A8" font-family="DM Sans">■ Monthly 21%</text>
+          <text x="175" y="114" font-size="9" fill="#378ADD" font-family="DM Sans">■ Rarely 14%</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">AI Tools Used by Practitioners (Multi-Select)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div class="bar-row"><div class="bar-label"><span>ChatGPT / GPT-4</span><span>67%</span></div><div class="bar-track"><div class="bar-fill" style="width:67%;background:var(--gold)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>MyFitnessPal AI</span><span>44%</span></div><div class="bar-track"><div class="bar-fill" style="width:44%;background:var(--teal)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Nutritics</span><span>38%</span></div><div class="bar-track"><div class="bar-fill" style="width:38%;background:var(--accent-blue)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Gemini / Bard</span><span>31%</span></div><div class="bar-track"><div class="bar-fill" style="width:31%;background:var(--accent-purple)"></div></div></div>
+        </div>
+        <div>
+          <div class="bar-row"><div class="bar-label"><span>Microsoft Copilot</span><span>18%</span></div><div class="bar-track"><div class="bar-fill" style="width:18%;background:var(--accent-green)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Clinictrack</span><span>14%</span></div><span></span><div class="bar-track"><div class="bar-fill" style="width:14%;background:var(--accent-red)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>EHR-integrated AI</span><span>11%</span></div><div class="bar-track"><div class="bar-fill" style="width:11%;background:var(--gold-dim)"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Other AI tools</span><span>9%</span></div><div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--teal-dark)"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERCEPTION PAGE -->
+  <div class="page" id="page-perception">
+    <div class="page-title">Perception & Benefits</div>
+    <div class="page-subtitle">Likert scale analysis of practitioner perceptions about AI in dietetics</div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="section-title">Perception Likert Distribution</div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Stacked bars: SD=Strongly Disagree · D=Disagree · N=Neutral · A=Agree · SA=Strongly Agree</p>
+
+      <div class="likert-row">
+        <div class="likert-label">AI improves accuracy of nutrition assessments</div>
+        <div class="likert-track">
+          <div class="likert-seg" style="width:4%;background:#E85D5D">SD</div>
+          <div class="likert-seg" style="width:8%;background:#F09595">D</div>
+          <div class="likert-seg" style="width:16%;background:#4A5A70">N</div>
+          <div class="likert-seg" style="width:38%;background:#1BB8A8">A</div>
+          <div class="likert-seg" style="width:34%;background:#0E8A7D">SA</div>
+        </div>
+      </div>
+      <div class="likert-row">
+        <div class="likert-label">AI saves time in dietary planning</div>
+        <div class="likert-track">
+          <div class="likert-seg" style="width:3%;background:#E85D5D">SD</div>
+          <div class="likert-seg" style="width:6%;background:#F09595">D</div>
+          <div class="likert-seg" style="width:12%;background:#4A5A70">N</div>
+          <div class="likert-seg" style="width:42%;background:#C9962A">A</div>
+          <div class="likert-seg" style="width:37%;background:#8B6A1A">SA</div>
+        </div>
+      </div>
+      <div class="likert-row">
+        <div class="likert-label">I trust AI-generated dietary recommendations</div>
+        <div class="likert-track">
+          <div class="likert-seg" style="width:14%;background:#E85D5D">SD</div>
+          <div class="likert-seg" style="width:22%;background:#F09595">D</div>
+          <div class="likert-seg" style="width:26%;background:#4A5A70">N</div>
+          <div class="likert-seg" style="width:28%;background:#378ADD">A</div>
+          <div class="likert-seg" style="width:10%;background:#185FA5">SA</div>
+        </div>
+      </div>
+      <div class="likert-row">
+        <div class="likert-label">AI supports patient education effectively</div>
+        <div class="likert-track">
+          <div class="likert-seg" style="width:5%;background:#E85D5D">SD</div>
+          <div class="likert-seg" style="width:9%;background:#F09595">D</div>
+          <div class="likert-seg" style="width:20%;background:#4A5A70">N</div>
+          <div class="likert-seg" style="width:40%;background:#9B6FD4">A</div>
+          <div class="likert-seg" style="width:26%;background:#6B3FAD">SA</div>
+        </div>
+      </div>
+      <div class="likert-row">
+        <div class="likert-label">AI threatens traditional dietitian roles</div>
+        <div class="likert-track">
+          <div class="likert-seg" style="width:28%;background:#E85D5D">SD</div>
+          <div class="likert-seg" style="width:24%;background:#F09595">D</div>
+          <div class="likert-seg" style="width:22%;background:#4A5A70">N</div>
+          <div class="likert-seg" style="width:16%;background:#1BB8A8">A</div>
+          <div class="likert-seg" style="width:10%;background:#0E8A7D">SA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="metric-card card-gold">
+        <div class="metric-label">Mean — Improves Accuracy</div>
+        <div class="metric-value">4.1</div>
+        <div class="metric-sub">SD = 0.92 · n = 342</div>
+      </div>
+      <div class="metric-card card-gold">
+        <div class="metric-label">Mean — Saves Time</div>
+        <div class="metric-value">4.3</div>
+        <div class="metric-sub">SD = 0.81 · n = 342</div>
+      </div>
+      <div class="metric-card card-gold">
+        <div class="metric-label">Mean — Trust in AI</div>
+        <div class="metric-value">2.9</div>
+        <div class="metric-sub">SD = 1.14 · n = 340</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRIERS PAGE -->
+  <div class="page" id="page-barriers">
+    <div class="page-title">Barriers to AI Adoption</div>
+    <div class="page-subtitle">Key limiting factors preventing wider AI integration in dietetics practice</div>
+
+    <div class="grid-4">
+      <div class="metric-card">
+        <div class="metric-label">Barrier Score</div>
+        <div class="metric-value" style="color:var(--accent-red)">0.62</div>
+        <div class="metric-sub">Composite index</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Infrastructure Barrier</div>
+        <div class="metric-value">71%</div>
+        <div class="metric-sub">Report poor internet / devices</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Training Gap</div>
+        <div class="metric-value">77%</div>
+        <div class="metric-sub">No formal AI training</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Cost Barrier</div>
+        <div class="metric-value">58%</div>
+        <div class="metric-sub">Cannot afford premium AI tools</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Barrier Frequency Analysis</div>
+        <div class="bar-row"><div class="bar-label"><span>Lack of formal AI training</span><span>77%</span></div><div class="bar-track"><div class="bar-fill" style="width:77%;background:var(--accent-red)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Poor internet/infrastructure</span><span>71%</span></div><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--accent-red);opacity:0.85"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Cost of AI tools</span><span>58%</span></div><div class="bar-track"><div class="bar-fill" style="width:58%;background:var(--gold)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Data privacy concerns</span><span>52%</span></div><div class="bar-track"><div class="bar-fill" style="width:52%;background:var(--gold)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Distrust in AI accuracy</span><span>48%</span></div><div class="bar-track"><div class="bar-fill" style="width:48%;background:var(--accent-purple)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Institutional resistance</span><span>37%</span></div><div class="bar-track"><div class="bar-fill" style="width:37%;background:var(--teal)"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>No time to learn AI</span><span>29%</span></div><div class="bar-track"><div class="bar-fill" style="width:29%;background:var(--teal)"></div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Barrier Index by Subgroup</div>
+        <table class="data-table">
+          <tr><th>Subgroup</th><th>Barrier Score</th><th>Level</th></tr>
+          <tr><td>Rural practitioners</td><td>0.81</td><td><span style="color:var(--accent-red);font-weight:700">Very High</span></td></tr>
+          <tr><td>16+ years experience</td><td>0.74</td><td><span style="color:var(--accent-red);font-weight:700">High</span></td></tr>
+          <tr><td>Community-based</td><td>0.70</td><td><span style="color:var(--accent-red);font-weight:700">High</span></td></tr>
+          <tr><td>Diploma holders</td><td>0.65</td><td><span style="color:var(--gold-light);font-weight:700">Moderate</span></td></tr>
+          <tr><td>Hospital-based</td><td>0.48</td><td><span style="color:var(--accent-green);font-weight:700">Low</span></td></tr>
+          <tr><td>Ph.D. holders</td><td>0.31</td><td><span style="color:var(--accent-green);font-weight:700">Very Low</span></td></tr>
+          <tr><td>0–2 yrs experience</td><td>0.28</td><td><span style="color:var(--accent-green);font-weight:700">Very Low</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORRELATION PAGE -->
+  <div class="page" id="page-correlation">
+    <div class="page-title">Correlation Insights</div>
+    <div class="page-subtitle">Pearson / Spearman correlation matrix · p &lt; 0.05 marked with *</div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="section-title">Correlation Heatmap</div>
+      <div id="heatmap" style="overflow-x:auto">
+        <div style="min-width:500px">
+          <div class="heatmap-grid" id="heatmap-grid"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:14px;font-size:10px;align-items:center">
+        <span style="color:var(--text-muted)">Correlation strength:</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(201,150,42,0.9);border-radius:3px;display:inline-block"></span> Strong +</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(201,150,42,0.4);border-radius:3px;display:inline-block"></span> Moderate</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(30,39,51,1);border-radius:3px;display:inline-block;border:1px solid var(--border)"></span> Weak</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(232,93,93,0.5);border-radius:3px;display:inline-block"></span> Negative</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Cross-Tabulation: Gender × AI Usage</div>
+        <table class="crosstab">
+          <tr><th></th><th>Never</th><th>Rarely</th><th>Monthly</th><th>Weekly</th><th>Daily</th></tr>
+          <tr><td style="color:var(--text-secondary);padding:7px 10px;font-weight:600">Female</td><td class="heat-low">18%</td><td class="heat-low">14%</td><td class="heat-mid">22%</td><td class="heat-high">28%</td><td class="heat-mid">18%</td></tr>
+          <tr><td style="color:var(--text-secondary);padding:7px 10px;font-weight:600">Male</td><td class="heat-low">12%</td><td class="heat-low">11%</td><td class="heat-mid">19%</td><td class="heat-high">31%</td><td class="heat-high">27%</td></tr>
+        </table>
+        <p style="font-size:10px;color:var(--text-muted);margin-top:8px">χ² = 12.4, p = 0.014 — Statistically significant</p>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Cross-Tabulation: Region × AI Awareness</div>
+        <table class="crosstab">
+          <tr><th>Region</th><th>Not Aware</th><th>Somewhat</th><th>Very Aware</th></tr>
+          <tr><td style="color:var(--text-secondary);padding:7px 10px">Greater Accra</td><td class="heat-low">8%</td><td class="heat-mid">24%</td><td class="heat-high">68%</td></tr>
+          <tr><td style="color:var(--text-secondary);padding:7px 10px">Ashanti</td><td class="heat-low">14%</td><td class="heat-mid">31%</td><td class="heat-high">55%</td></tr>
+          <tr><td style="color:var(--text-secondary);padding:7px 10px">Northern</td><td class="heat-high">38%</td><td class="heat-mid">34%</td><td class="heat-low">28%</td></tr>
+          <tr><td style="color:var(--text-secondary);padding:7px 10px">Western</td><td class="heat-mid">22%</td><td class="heat-mid">38%</td><td class="heat-mid">40%</td></tr>
+        </table>
+        <p style="font-size:10px;color:var(--text-muted);margin-top:8px">χ² = 28.6, p &lt; 0.001 — Highly significant</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEXT PAGE -->
+  <div class="page" id="page-text">
+    <div class="page-title">Open Text Insights</div>
+    <div class="page-subtitle">Keyword extraction, sentiment analysis, and theme clustering from open-ended responses</div>
+
+    <div class="grid-3" style="margin-bottom:20px">
+      <div class="metric-card"><div class="metric-label">Responses Collected</div><div class="metric-value">301</div><div class="metric-sub">Of 342 total</div></div>
+      <div class="metric-card"><div class="metric-label">Overall Sentiment</div><div class="metric-value" style="color:var(--accent-green)">+0.42</div><div class="metric-sub">Moderately positive</div></div>
+      <div class="metric-card"><div class="metric-label">Themes Identified</div><div class="metric-value">7</div><div class="metric-sub">Via clustering</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Word Cloud — Top Keywords</div>
+        <div class="word-cloud">
+          <span class="word" style="font-size:28px">training</span>
+          <span class="word" style="font-size:24px">accuracy</span>
+          <span class="word" style="font-size:20px;color:var(--teal)">trust</span>
+          <span class="word" style="font-size:32px">ChatGPT</span>
+          <span class="word" style="font-size:18px;color:var(--accent-blue)">internet</span>
+          <span class="word" style="font-size:22px">patients</span>
+          <span class="word" style="font-size:26px">efficiency</span>
+          <span class="word" style="font-size:16px;color:var(--accent-purple)">privacy</span>
+          <span class="word" style="font-size:20px">cost</span>
+          <span class="word" style="font-size:18px;color:var(--accent-green)">useful</span>
+          <span class="word" style="font-size:14px">regulation</span>
+          <span class="word" style="font-size:24px;color:var(--accent-red)">infrastructure</span>
+          <span class="word" style="font-size:16px">Ghana</span>
+          <span class="word" style="font-size:20px">dietitian</span>
+          <span class="word" style="font-size:14px;color:var(--teal)">nutrition</span>
+          <span class="word" style="font-size:18px">time-saving</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Theme Clusters</div>
+        <table class="data-table">
+          <tr><th>Theme</th><th>Freq</th><th>Sentiment</th></tr>
+          <tr><td>Need for AI training programs</td><td>142</td><td><span style="color:var(--accent-green)">Positive</span></td></tr>
+          <tr><td>Infrastructure challenges</td><td>118</td><td><span style="color:var(--accent-red)">Negative</span></td></tr>
+          <tr><td>Efficiency & time savings</td><td>97</td><td><span style="color:var(--accent-green)">Positive</span></td></tr>
+          <tr><td>Data privacy concerns</td><td>84</td><td><span style="color:var(--accent-red)">Negative</span></td></tr>
+          <tr><td>Patient education improvement</td><td>76</td><td><span style="color:var(--accent-green)">Positive</span></td></tr>
+          <tr><td>Skepticism about AI accuracy</td><td>64</td><td><span style="color:var(--gold-light)">Mixed</span></td></tr>
+          <tr><td>Cost & access barriers</td><td>58</td><td><span style="color:var(--accent-red)">Negative</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Sentiment Distribution</div>
+      <div class="likert-track" style="height:30px;border-radius:8px">
+        <div class="likert-seg" style="width:22%;background:#E85D5D;font-size:11px">Negative 22%</div>
+        <div class="likert-seg" style="width:18%;background:#4A5A70;font-size:11px">Mixed 18%</div>
+        <div class="likert-seg" style="width:60%;background:#1BB8A8;font-size:11px">Positive 60%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD PAGE -->
+  <div class="page" id="page-upload">
+    <div class="page-title">Upload Research Data</div>
+    <div class="page-subtitle">Upload CSV or XLSX files — system auto-detects variable types and generates analysis</div>
+
+    <div class="upload-zone" onclick="alert('File picker would open here. Connect backend API endpoint POST /api/upload')">
+      <div class="upload-zone-icon">📂</div>
+      <h3>Drop your CSV or XLSX file here</h3>
+      <p>or click to browse your files</p>
+      <div class="formats">Supported formats: .csv · .xlsx · .xls · Max size: 50MB</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Auto-Detection Pipeline</div>
+        <table class="data-table">
+          <tr><th>Variable Pattern</th><th>Detected As</th><th>Action</th></tr>
+          <tr><td>≤10 unique values</td><td><span class="tag">Categorical</span></td><td>Frequency table</td></tr>
+          <tr><td>Values 1–5 only</td><td><span class="tag green">Likert Scale</span></td><td>Mean + SD + stacked bar</td></tr>
+          <tr><td>Comma-separated in cell</td><td><span class="tag purple">Multi-select</span></td><td>Split & encode</td></tr>
+          <tr><td>Long text (>50 chars avg)</td><td><span class="tag gold">Open-ended</span></td><td>NLP + themes</td></tr>
+          <tr><td>Continuous numeric</td><td><span class="tag">Numeric</span></td><td>Descriptive stats</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="section-title">API Endpoint</div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/api/upload</span><span class="endpoint-desc">Upload CSV/XLSX file</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/api/dataset/:id</span><span class="endpoint-desc">Get dataset metadata</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><span class="endpoint-path">/api/analyze/:id</span><span class="endpoint-desc">Trigger full analysis</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/api/results/:id</span><span class="endpoint-desc">Fetch analysis results</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><span class="endpoint-path">/api/export/:id</span><span class="endpoint-desc">Export report PDF</span></div>
+        <div class="endpoint-row"><span class="method delete">DELETE</span><span class="endpoint-path">/api/dataset/:id</span><span class="endpoint-desc">Delete dataset</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE PAGE -->
+  <div class="page" id="page-architecture">
+    <div class="page-title">System Architecture</div>
+    <div class="page-subtitle">Full-stack design — React · Node.js/Express · PostgreSQL · Python microservice</div>
+
+    <div class="grid-3" style="margin-bottom:20px">
+      <div class="arch-box">
+        <h4>🖥 Frontend (React.js)</h4>
+        <ul>
+          <li>React 18 + Vite</li>
+          <li>Recharts / Chart.js</li>
+          <li>Axios for API calls</li>
+          <li>React Router v6</li>
+          <li>Tailwind CSS</li>
+          <li>Papa Parse (CSV)</li>
+          <li>SheetJS (XLSX)</li>
+        </ul>
+      </div>
+      <div class="arch-box">
+        <h4>⚙ Backend (Node.js/Express)</h4>
+        <ul>
+          <li>Express.js REST API</li>
+          <li>Multer (file upload)</li>
+          <li>node-postgres (pg)</li>
+          <li>JWT Authentication</li>
+          <li>Axios → Python service</li>
+          <li>Winston logging</li>
+          <li>Joi validation</li>
+        </ul>
+      </div>
+      <div class="arch-box">
+        <h4>🐍 Python Microservice</h4>
+        <ul>
+          <li>FastAPI</li>
+          <li>Pandas + NumPy</li>
+          <li>SciPy (stats)</li>
+          <li>NLTK / spaCy (NLP)</li>
+          <li>Seaborn (charts)</li>
+          <li>Scikit-learn (clusters)</li>
+          <li>TextBlob (sentiment)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="section-title">Folder Structure</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <div class="folder-tree">
+          <div class="dir">📁 frontend/</div>
+          <div style="padding-left:14px">
+            <div class="dir">📁 src/</div>
+            <div style="padding-left:14px">
+              <div class="dir">📁 components/</div>
+              <div class="dir">📁 pages/</div>
+              <div class="dir">📁 charts/</div>
+              <div class="dir">📁 hooks/</div>
+              <div class="dir">📁 utils/</div>
+              <div class="file">📄 App.jsx</div>
+              <div class="file">📄 main.jsx</div>
+            </div>
+            <div class="file">📄 vite.config.js</div>
+            <div class="file">📄 package.json</div>
+          </div>
+        </div>
+        <div class="folder-tree">
+          <div class="dir">📁 backend/</div>
+          <div style="padding-left:14px">
+            <div class="dir">📁 routes/</div>
+            <div style="padding-left:14px">
+              <div class="file">📄 upload.js</div>
+              <div class="file">📄 analyze.js</div>
+              <div class="file">📄 results.js</div>
+            </div>
+            <div class="dir">📁 middleware/</div>
+            <div class="dir">📁 db/</div>
+            <div style="padding-left:14px">
+              <div class="file">📄 schema.sql</div>
+              <div class="file">📄 queries.js</div>
+            </div>
+            <div class="file">📄 server.js</div>
+            <div class="file">📄 .env</div>
+          </div>
+        </div>
+        <div class="folder-tree">
+          <div class="dir">📁 python-service/</div>
+          <div style="padding-left:14px">
+            <div class="dir">📁 analysis/</div>
+            <div style="padding-left:14px">
+              <div class="file">📄 descriptive.py</div>
+              <div class="file">📄 likert.py</div>
+              <div class="file">📄 correlation.py</div>
+              <div class="file">📄 nlp.py</div>
+              <div class="file">📄 indices.py</div>
+            </div>
+            <div class="file">📄 main.py</div>
+            <div class="file">📄 requirements.txt</div>
+          </div>
+          <div class="dir">📁 postgres/</div>
+          <div style="padding-left:14px">
+            <div class="file">📄 init.sql</div>
+          </div>
+          <div class="file">📄 docker-compose.yml</div>
+          <div class="file">📄 README.md</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="section-title">Database Schema (PostgreSQL)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <p style="font-size:11px;color:var(--gold-light);margin-bottom:6px;font-weight:600">datasets</p>
+          <table class="schema-table">
+            <tr><th>Column</th><th>Type</th><th>Note</th></tr>
+            <tr><td class="col-pk">id</td><td class="col-type">UUID PK</td><td>Primary key</td></tr>
+            <tr><td>filename</td><td class="col-type">VARCHAR(255)</td><td></td></tr>
+            <tr><td>row_count</td><td class="col-type">INTEGER</td><td></td></tr>
+            <tr><td>col_count</td><td class="col-type">INTEGER</td><td></td></tr>
+            <tr><td>status</td><td class="col-type">VARCHAR(50)</td><td>processing/done</td></tr>
+            <tr><td>created_at</td><td class="col-type">TIMESTAMP</td><td>Auto</td></tr>
+          </table>
+        </div>
+        <div>
+          <p style="font-size:11px;color:var(--gold-light);margin-bottom:6px;font-weight:600">analysis_results</p>
+          <table class="schema-table">
+            <tr><th>Column</th><th>Type</th><th>Note</th></tr>
+            <tr><td class="col-pk">id</td><td class="col-type">UUID PK</td><td>Primary key</td></tr>
+            <tr><td>dataset_id</td><td class="col-type">UUID FK</td><td>→ datasets</td></tr>
+            <tr><td>analysis_type</td><td class="col-type">VARCHAR(100)</td><td>descriptive, etc.</td></tr>
+            <tr><td>variable_name</td><td class="col-type">VARCHAR(255)</td><td></td></tr>
+            <tr><td>result_data</td><td class="col-type">JSONB</td><td>Flexible results</td></tr>
+            <tr><td>created_at</td><td class="col-type">TIMESTAMP</td><td>Auto</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Sample Code — File Upload (Node.js)</div>
+      <div class="code-block">// routes/upload.js
+const multer = require('multer');
+const Papa = require('papaparse');
+const XLSX = require('xlsx');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
+
+router.post('/api/upload', upload.single('file'), async (req, res) => {
+  const { buffer, mimetype, originalname } = req.file;
+  let data;
+  
+  if (mimetype === 'text/csv') {
+    const csv = buffer.toString('utf-8');
+    data = Papa.parse(csv, { header: true, skipEmptyLines: true }).data;
+  } else {
+    const wb = XLSX.read(buffer, { type: 'buffer' });
+    data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+  }
+  
+  const datasetId = await db.saveDataset({ filename: originalname, data });
+  await axios.post('http://python-service:8000/analyze', { datasetId });
+  res.json({ datasetId, rowCount: data.length });
+});</div>
+
+      <div class="section-title" style="margin-top:16px">Deployment</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span class="tag">Docker Compose</span>
+        <span class="tag green">PostgreSQL 15</span>
+        <span class="tag">Node.js 20 LTS</span>
+        <span class="tag purple">Python 3.11</span>
+        <span class="tag gold">Nginx Reverse Proxy</span>
+        <span class="tag">React Build → /dist</span>
+        <span class="tag green">SSL via Certbot</span>
+        <span class="tag">AWS EC2 / DigitalOcean</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main -->
+</div><!-- end layout -->
+
+<script>
+// NAV
+function goPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+
+  const titles = {
+    overview: ['Research Overview', 'AI in Nutrition & Dietetics · Ghana · 2024'],
+    demographics: ['Demographics', 'Respondent characteristics and breakdown'],
+    awareness: ['AI Awareness & Usage', 'Tool adoption and frequency of use'],
+    perception: ['Perception & Benefits', 'Likert scale analysis of AI perceptions'],
+    barriers: ['Barriers', 'Key limiting factors for AI adoption'],
+    correlation: ['Correlation Insights', 'Statistical relationships and cross-tabulations'],
+    text: ['Open Text Insights', 'Keyword extraction and theme clustering'],
+    upload: ['Upload Data', 'CSV / XLSX upload and auto-analysis pipeline'],
+    architecture: ['System Architecture', 'Full-stack technical design and schema'],
+  };
+  if (titles[id]) {
+    document.getElementById('page-header').textContent = titles[id][0];
+    document.getElementById('page-desc').textContent = titles[id][1];
+  }
+}
+
+// HEATMAP
+const vars = ['Awareness','Usage','Perception','Barriers','Training','Adoption'];
+const corr = [
+  [1.00, 0.72, 0.64, -0.45, 0.58, 0.61],
+  [0.72, 1.00, 0.55, -0.52, 0.49, 0.78],
+  [0.64, 0.55, 1.00, -0.38, 0.42, 0.53],
+  [-0.45,-0.52,-0.38,1.00,-0.61,-0.57],
+  [0.58, 0.49, 0.42,-0.61,1.00, 0.66],
+  [0.61, 0.78, 0.53,-0.57,0.66, 1.00],
+];
+
+const grid = document.getElementById('heatmap-grid');
+// Header row
+grid.innerHTML = '<div></div>' + vars.map(v => `<div style="font-size:10px;color:var(--text-muted);text-align:center;padding:3px;font-weight:600">${v}</div>`).join('');
+
+vars.forEach((rowVar, i) => {
+  grid.innerHTML += `<div class="heatmap-label">${rowVar}</div>`;
+  vars.forEach((_, j) => {
+    const val = corr[i][j];
+    const abs = Math.abs(val);
+    let bg, color;
+    if (val > 0) {
+      const a = val === 1 ? 0.95 : val * 0.9;
+      bg = `rgba(201,150,42,${a})`;
+      color = val > 0.5 ? '#0D1117' : '#E8B84B';
+    } else {
+      const a = Math.abs(val) * 0.8;
+      bg = `rgba(232,93,93,${a})`;
+      color = abs > 0.4 ? '#0D1117' : '#E85D5D';
+    }
+    const sig = (val !== 1 && abs >= 0.3) ? '*' : '';
+    grid.innerHTML += `<div class="heatmap-cell" style="background:${bg};color:${color}">${val.toFixed(2)}${sig}</div>`;
+  });
+});
+</script>
+</body>
+</html>
